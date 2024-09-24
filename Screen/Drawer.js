@@ -28,6 +28,16 @@ const Drawer = () => {
         component={Profile}
         options={{ drawerLabel: 'Profile' }}
         />
+        <Draw.Screen
+        name="Your Activity"
+        component={Youractivity}
+        options={{ drawerLabel: 'Your Activity' }}
+        />
+        <Draw.Screen
+        name="Watch Later"
+        component={Watchlater}
+        options={{ drawerLabel: 'Watch Later' }}
+        />
         </Draw.Navigator>
     </MyContext.Provider>
 </SafeAreaView>
