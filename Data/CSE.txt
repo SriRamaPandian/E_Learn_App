@@ -1,0 +1,116 @@
+const coursesData = {
+  "CSE-HS6151": {
+    course_name: "Technical English I",
+    dept_name: "CSE",
+    years: "1",
+    sem: "1"
+  },
+  "CSE-PH6151": {
+    course_name: "Engineering Physics",
+    dept_name: "CSE",
+    years: "1",
+    sem: "1"
+  },
+  "CSE-MA6151": {
+    course_name: "Mathematics I",
+    dept_name: "CSE",
+    years: "1",
+    sem: "1"
+  },
+  "CSE-CS6101": {
+    course_name: "Programming with C",
+    dept_name: "CSE",
+    years: "1",
+    sem: "1"
+  },
+  "CSE-CS6102": {
+    course_name: "Computational Thinking",
+    dept_name: "CSE",
+    years: "1",
+    sem: "1"
+  },
+  "CSE-HS6251": {
+    course_name: "Technical English II",
+    dept_name: "CSE",
+    years: "1",
+    sem: "2"
+  },
+  "CSE-CY6251": {
+    course_name: "Engineering Chemistry",
+    dept_name: "CSE",
+    years: "1",
+    sem: "2"
+  },
+  "CSE-MA6251": {
+    course_name: "Discrete Mathematics",
+    dept_name: "CSE",
+    years: "1",
+    sem: "2"
+  },
+  "CSE-GE6251": {
+    course_name: "Engineering Graphics",
+    dept_name: "CSE",
+    years: "1",
+    sem: "2"
+  },
+  "CSE-CS6103": {
+    course_name: "Application Development Practices",
+    dept_name: "CSE",
+    years: "1",
+    sem: "2"
+  },
+  "CSE-CS6104": {
+    course_name: "Data Structures and Algorithms",
+    dept_name: "CSE",
+    years: "2",
+    sem: "3"
+  },
+  "CSE-CS6105": {
+    course_name: "Digital Fundamentals and Computer Organization",
+    dept_name: "CSE",
+    years: "2",
+    sem: "3"
+  },
+  "CSE-MA6351": {
+    course_name: "Probability and Statistics",
+    dept_name: "CSE",
+    years: "2",
+    sem: "3"
+  },
+  "CSE-EE6351": {
+    course_name: "Basics of Electrical and Electronics Engineering",
+    dept_name: "CSE",
+    years: "2",
+    sem: "3"
+  },
+  "CSE-CS6106": {
+    course_name: "Database Management Systems",
+    dept_name: "CSE",
+    years: "2",
+    sem: "4"
+  },
+  "CSE-CS6107": {
+    course_name: "Computer Architecture",
+    dept_name: "CSE",
+    years: "2",
+    sem: "4"
+  },
+  "CSE-CS6108": {
+    course_name: "Operating Systems",
+    dept_name: "CSE",
+    years: "2",
+    sem: "4"
+  },
+  "CSE-CS6202": {
+    course_name: "Theory of Computation",
+    dept_name: "CSE",
+    years: "2",
+    sem: "4"
+  },
+  "CSE-MA6201": {
+    course_name: "Linear Algebra",
+    dept_name: "CSE",
+    years: "2",
+    sem: "4"
+  }
+};

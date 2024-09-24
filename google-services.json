@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "235753474809",
+    "firebase_url": "https://e-learning-app-519ef-default-rtdb.firebaseio.com",
+    "project_id": "e-learning-app-519ef",
+    "storage_bucket": "e-learning-app-519ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235753474809:android:7bbbe7c6a4b310c7d67028",
+        "android_client_info": {
+          "package_name": "com.srp.elearnapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEYbOIqxI3aHt6uNvVdQmtey1p_Aw9PIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

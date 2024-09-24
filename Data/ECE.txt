@@ -1,0 +1,122 @@
+const coursesData = {
+  "ECE-HS5151": {
+    course_name: "Technical English",
+    dept_name: "ECE",
+    years: "1",
+    sem: "1"
+  },
+  "ECE-PH5151": {
+    course_name: "Engineering Physics",
+    dept_name: "ECE",
+    years: "1",
+    sem: "1"
+  },
+  "ECE-MA5158": {
+    course_name: "Engineering Mathematics I",
+    dept_name: "ECE",
+    years: "1",
+    sem: "1"
+  },
+  "ECE-CY5151": {
+    course_name: "Engineering Chemistry",
+    dept_name: "ECE",
+    years: "1",
+    sem: "1"
+  },
+  "ECE-GE5153": {
+    course_name: "Problem Solving and Python Programming",
+    dept_name: "ECE",
+    years: "1",
+    sem: "1"
+  },
+  "ECE-MA5252": {
+    course_name: "Engineering Mathematics II",
+    dept_name: "ECE",
+    years: "1",
+    sem: "2"
+  },
+  "ECE-EE5201": {
+    course_name: "Basics of Electrical and Measurement Engineering",
+    dept_name: "ECE",
+    years: "1",
+    sem: "2"
+  },
+  "ECE-GE5152": {
+    course_name: "Engineering Mechanics",
+    dept_name: "ECE",
+    years: "1",
+    sem: "2"
+  },
+  "ECE-EC5251": {
+    course_name: "Circuit Theory",
+    dept_name: "ECE",
+    years: "1",
+    sem: "2"
+  },
+  "ECE-PH5202": {
+    course_name: "Semiconductor Physics and Devices",
+    dept_name: "ECE",
+    years: "1",
+    sem: "2"
+  },
+  "ECE-MA5356": {
+    course_name: "Linear Algebra and Numerical Methods",
+    dept_name: "ECE",
+    years: "2",
+    sem: "3"
+  },
+  "ECE-EC5301": {
+    course_name: "Electronic Circuits I",
+    dept_name: "ECE",
+    years: "2",
+    sem: "3"
+  },
+  "ECE-EC5302": {
+    course_name: "Electromagnetic Fields and Waves",
+    dept_name: "ECE",
+    years: "2",
+    sem: "3"
+  },
+  "ECE-EC5303": {
+    course_name: "Digital System Design",
+    dept_name: "ECE",
+    years: "2",
+    sem: "3"
+  },
+  "ECE-EC5304": {
+    course_name: "Signals and Systems",
+    dept_name: "ECE",
+    years: "2",
+    sem: "3"
+  },
+  "ECE-EC5401": {
+    course_name: "Transmission Lines and Wave Guides",
+    dept_name: "ECE",
+    years: "2",
+    sem: "4"
+  },
+  "ECE-EC5402": {
+    course_name: "Communication Theory",
+    dept_name: "ECE",
+    years: "2",
+    sem: "4"
+  },
+  "ECE-EC5403": {
+    course_name: "Electronics Circuits II",
+    dept_name: "ECE",
+    years: "2",
+    sem: "4"
+  },
+  "ECE-EC5404": {
+    course_name: "Digital Signal Processing",
+    dept_name: "ECE",
+    years: "2",
+    sem: "4"
+  },
+  "ECE-EC5405": {
+    course_name: "Linear Integrated Circuits",
+    dept_name: "ECE",
+    years: "2",
+    sem: "4"
+  }
+};
