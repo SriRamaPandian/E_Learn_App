@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert } from 'react-native';
 import { firebase_auth, firebase_db } from '../firebaseConfig';
-//import { SHA256 } from 'js-sha256';
+import CryptoJS from 'crypto-js'; // Import crypto-js
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Picker } from '@react-native-picker/picker';
 import { ScrollView } from 'react-native-gesture-handler';
 import { styled } from 'nativewind';
 import { setDoc, doc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const StyledScrollView = styled(ScrollView);
@@ -21,36 +22,45 @@ const SignUp = ({ navigation }) => {
   const [dept,setdept] = useState(null);
   const auth = firebase_auth;
 
-  const handleSignUp = async () => {
-    try {
-      // Check if email already exists
-      /*const userSnapshot = await firestore.collection('Profile').where('email', '==', email).get();
-      if (!userSnapshot.empty) {
-        Alert.alert('Email already exists');
-        return;
-      }*/
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Hash the password
-      
-      //const hashedPassword = SHA256(password);
 
-      // Store the user information
-      await setDoc(doc(firebase_db, 'Profile', userCredential.user.uid), {
-        username,
-        email,
-        password,
-        rollno,
-        year,
-        sem,
-        dept,
-      });
-    Alert.alert('Sign up successful!')
-    navigation.navigate("SelectFav");
-    } catch (error) {
-      Alert.alert(error.message);
-      console.log(error.message);
+const handleSignUp = async () => {
+  try {
+    if (!email || !password || !username || !rollno || !year || !sem || !dept) {
+      throw new Error('All fields are required');
     }
-  };
+
+    // Hash the password using crypto-js (SHA256)
+    const hashedPassword = CryptoJS.SHA256(password).toString();
+
+    // Create user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, hashedPassword);
+    // Store the user information with the hashed password
+    await setDoc(doc(firebase_db, 'Profile', userCredential.user.uid), {
+      username,
+      email,
+      password: hashedPassword, // Store the hashed password
+      rollno,
+      year,
+      sem,
+      dept,
+      createdAt: new Date(),
+    });
+
+    // Store user ID in AsyncStorage for persistent login
+    await AsyncStorage.setItem('userId', userCredential.user.uid);
+
+    // Notify the user of successful signup
+    Alert.alert('Sign up successful!');
+    navigation.navigate("SelectFav");
+
+  } catch (error) {
+    // Handle and log errors
+    Alert.alert(error.message);
+    console.error(error.message);
+  }
+};
+
+  
 
   return (
     <StyledScrollView className=' bg-sky-100'>
@@ -66,13 +76,13 @@ const SignUp = ({ navigation }) => {
                 className='w-3/4 mb-[30] p-[13] border-2 border-black bg-white rounded-xl text-black'
                 placeholder="Email" 
                 placeholderTextColor={'#000000'}
-                onChangeText={setEmail} 
+                onChangeText={text => setEmail(text)} 
                 value={email} />
         <TextInput 
                 className='w-3/4 mb-[30] p-[13] border-2 border-black bg-white rounded-xl text-black'
                 placeholder="Password" 
                 placeholderTextColor={'#000000'}
-                onChangeText={setPassword} 
+                onChangeText={text => setPassword(text)} 
                 value={password} 
                 secureTextEntry />
         <TextInput

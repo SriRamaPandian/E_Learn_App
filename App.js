@@ -47,7 +47,6 @@ export default function App() {
     onAuthStateChanged(firebase_auth, (user) => {
       setUser(user);
       setId(user.uid);
-
     });
   }, [])
 
@@ -57,7 +56,7 @@ export default function App() {
         <Stack.Navigator initialRouteName={ { user }? "Drawer" : "SignUp"}>
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="Drawer" component={Drawer} />
+          <Stack.Screen name="Drawer" component={Drawer} options={{ headerShown:false }} />
           <Stack.Screen name="SelectFav" component={SelectFav} />
         </Stack.Navigator>
       </NavigationContainer>
