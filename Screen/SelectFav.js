@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { firebase_auth, firebase_db } from '../firebaseConfig';
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useCallback } from 'react';
 import { collection, query, where, getDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 
 const SelectCourse = ({ navigation }) => {
@@ -14,6 +16,7 @@ const SelectCourse = ({ navigation }) => {
   const coursetag = [];
   const [isLoading, setisLoading] = useState(true);
 
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,7 +81,7 @@ const SelectCourse = ({ navigation }) => {
     };
 
     fetchData();
-  }, [toggle]);
+  }, [toggle||isLoading]);
 
   const submit = async () => {
     try{
@@ -103,15 +106,18 @@ const SelectCourse = ({ navigation }) => {
  
 
   if (isLoading) {
-    return (<View><Text>
-      wait
-    </Text>
-    </View>
+    return (
+        <View className='p-20 justify-center items-center'>
+          <Text className='font-semibold text-2xl'>
+          loading...
+          </Text>
+        </View>
     );
   }
 
   return (
-    <ScrollView>
+  <ScrollView className=' bg-sky-100'>
+    <View className='justify-center items-center'>
       <View className='justify-center items-center p-[20]'>
         <Text className='text-3xl text-center font-bold'>Select the Courses that you need the most</Text>
       </View>
@@ -128,7 +134,8 @@ const SelectCourse = ({ navigation }) => {
         <Text>Next</Text>
       </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
+  </ScrollView>
   );
 };
 

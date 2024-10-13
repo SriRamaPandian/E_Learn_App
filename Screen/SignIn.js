@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, Text, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { firebase_auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { ScrollView } from 'react-native-gesture-handler';
-import { styled } from 'nativewind';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CryptoJS from 'crypto-js'; // Import crypto-js
 
-const StyledScrollView = styled(ScrollView);
 
 const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -15,7 +14,9 @@ const SignIn = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
       // Sign in using Firebase Auth
-      await signInWithEmailAndPassword(auth, email, password);
+      const hashedPassword = CryptoJS.SHA256(password).toString();
+      const userCredential = await signInWithEmailAndPassword(auth, email, hashedPassword);
+      await AsyncStorage.setItem('userId', userCredential.user.uid);
       // If successful, navigate to the main app screen
       Alert.alert('Sign in successful!');
       navigation.navigate("Drawer"); // Replace with your main screen
@@ -32,7 +33,7 @@ const SignIn = ({ navigation }) => {
   };
 
   return (
-    <StyledScrollView className=' bg-sky-100'>
+    <ScrollView className=' bg-sky-100'>
       <View className='justify-center items-center'>
         <View className='flex-1 w-3/4 justify-center items-center my-36 py-10 bg-slate-100'>
           <TextInput
@@ -63,7 +64,7 @@ const SignIn = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </StyledScrollView>
+    </ScrollView>
   );
 };
 
