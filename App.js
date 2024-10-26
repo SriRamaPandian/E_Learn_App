@@ -6,9 +6,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './Screen/SignIn.js';
 import SignUp from './Screen/SignUp.js';
 import Drawer from './Screen/Drawer.js';
-import SelectFav from './Screen/SelectFav.js'
+import SelectFav from './Screen/SelectFav.js';
 import { styled } from 'nativewind';
-import { onAuthStateChanged, User } from '@react-native-firebase/auth'; // Correct import
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { firebase_auth } from './firebaseConfig.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +16,8 @@ const Stack = createStackNavigator();
 const StyledSafeAreaView = styled(SafeAreaView);
 
 export default function App() {
-  const [user, setUser] = useState(User); // Use consistent casing
+  const [user, setUser] = useState(User);
+
   const setId = async (id) => {
     try {
       await AsyncStorage.setItem('userId', id);
@@ -25,38 +26,30 @@ export default function App() {
     }
   };
   
-  // Get ID  const id = await getId();
-  const getId = async () => {
-    try {
-      const id = await AsyncStorage.getItem('userId');
-      if (id !== null) {
-        // Value exists
-        return id;
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-
-  if(User){
-    setUser(User);
-    setId(User.uid);
-  }
   useEffect(() => {
-    onAuthStateChanged(firebase_auth, (user) => {
-      setUser(user);
-      setId(user.uid);
+    const unsubscribe = onAuthStateChanged(firebase_auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        setId(currentUser.uid);
+      } else {
+        setUser(null);
+      }
     });
-  }, [])
+
+    return () => unsubscribe();
+  }, []);
+
+  if(user == undefined){
+    return(null)
+  }
 
   return (
     <StyledSafeAreaView className="flex-1">
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={ { user }? "Drawer" : "SignUp"}>
+        <Stack.Navigator initialRouteName={ user ? "Drawer" : "SignIn" }>
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="Drawer" component={Drawer} options={{ headerShown:false }} />
+          <Stack.Screen name="Drawer" component={Drawer} options={{ headerShown: false }} />
           <Stack.Screen name="SelectFav" component={SelectFav} />
         </Stack.Navigator>
       </NavigationContainer>

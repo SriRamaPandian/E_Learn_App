@@ -40,10 +40,10 @@ const Youractivity = () => {
     setcname('');
     setvname('');
     setdescription('');
-    // Perform your data fetching or other refreshing tasks here
+    
     setTimeout(() => {
       setRefreshing(false);
-    }, 3000); // Simulate a network request
+    }, 3000);
   };
 
   useFocusEffect(
@@ -53,7 +53,7 @@ const Youractivity = () => {
         const storedStart = await AsyncStorage.getItem('LGstart');
         const storedEnd = await AsyncStorage.getItem('LGend');
   
-        // Parse data if needed
+      
         setLGcolor(storedColor ? JSON.parse(storedColor) : ['#ffd9b3', '#ACE0F9']);
         setLGstart(storedStart ? JSON.parse(storedStart) : { x: 0.3, y: 0.3 });
         setLGend(storedEnd ? JSON.parse(storedEnd) : { x: 0.7, y: 0.7 });
@@ -62,9 +62,9 @@ const Youractivity = () => {
       
       display();
   
-      // Optionally, return a cleanup function if needed
+      
       return () => {
-        // Clean up here if necessary
+       
       };
     }, [])
   );
@@ -72,7 +72,7 @@ const Youractivity = () => {
   const pickVideo = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'video/*', // Allow all file types; you can specify ['video/*', 'application/pdf'] etc.
+        type: 'video/*', 
         copyToCacheDirectory: false,
       });
   
@@ -94,10 +94,10 @@ const Youractivity = () => {
       setdresult(result)
       const { name, uri, mimeType } = result;
       
-      let fileType = mimeType || name.split('.').pop();  // Get file type from mimeType or extension
-      console.log('File Type:', fileType);  // Example: 'application/pdf', 'application/vnd.ms-powerpoint'
+      let fileType = mimeType || name.split('.').pop();
+      console.log('File Type:', fileType);
       
-      displayDocumentIcon(fileType);  // Function to display relevant icon
+      displayDocumentIcon(fileType);
     }
   };
 
@@ -106,10 +106,10 @@ const Youractivity = () => {
       'application/pdf': pdf,
       'application/vnd.ms-powerpoint': ppt,
       'application/msword': doc,
-      // Add more file types as needed
+      
     };
   
-    return iconMap[fileType] || unknown;  // Default to an unknown file icon
+    return iconMap[fileType] || unknown; 
   };
   
 

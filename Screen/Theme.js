@@ -17,10 +17,9 @@ const Theme = () => {
     const onRefresh = () => {
         setRefreshing(true);
         setRefreshKey(refreshKey + 1);
-        // Perform your data fetching or other refreshing tasks here
         setTimeout(() => {
         setRefreshing(false);
-        }, 3000); // Simulate a network request
+        }, 3000);
     };
 
     useEffect(() => {
@@ -29,7 +28,6 @@ const Theme = () => {
             const storedStart = await AsyncStorage.getItem('LGstart');
             const storedEnd = await AsyncStorage.getItem('LGend');
 
-            // Parse data if needed
             setLGcolor(storedColor ? JSON.parse(storedColor) : ['#ffd9b3', '#ACE0F9']);
             setLGstart(storedStart ? JSON.parse(storedStart) : { x: 0.3, y: 0.3 });
             setLGend(storedEnd ? JSON.parse(storedEnd) : { x: 0.7, y: 0.7 });
@@ -52,12 +50,13 @@ const Theme = () => {
     <LinearGradient 
         colors={LGcolor} 
         start={LGstart} 
-        end={LGend}  // Smooth radial gradient
+        end={LGend}
         className='flex-1' >
         <ScrollView
         refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View className=' flex-wrap flex-row justify-center items-center mt-10'>
+            
                 {/* First Gradient */}
                 <TouchableOpacity onPress={() => changetheme(['#FFFB7D', '#FFC6FF'], { x: 0.1, y: 0.2 }, { x: 0.9, y: 0.8 })}>
                     <View className='p-7'>

@@ -1,11 +1,11 @@
-// addCourses.js
+
 
 const { initializeApp } = require('firebase/app');
 const { getFirestore, collection, doc, setDoc } = require('firebase/firestore');
 const { getAuth } = require('firebase/auth');
 const AsyncStorage = require('@react-native-async-storage/async-storage');
 
-// Your Firebase configuration object
+
 const firebaseConfig = {
   apiKey: "AIzaSyCMZXzb0vl37s9_m1xqBudlLhVm4k6pYGw",
   authDomain: "e-learn-app-53b7a.firebaseapp.com",
@@ -16,16 +16,12 @@ const firebaseConfig = {
   measurementId: "G-F2KJBWN143"
 };
 
-// Initialize Firebase App
 const firebase_app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
 const firebase_db = getFirestore(firebase_app);
 
-// Initialize Firebase Auth
 const firebase_auth = getAuth(firebase_app);
 
-// Your course data
 const coursesData = {
   "MECH-HS5151": {
     course_name: "Technical English",
@@ -150,16 +146,13 @@ const coursesData = {
 };
 
   
-  
 
-// Function to add all courses to Firestore
 const addCoursesToFirestore = async () => {
   for (const [courseId, courseData] of Object.entries(coursesData)) {
     try {
-      // Create a reference to the collection and document
+
       const courseRef = doc(collection(firebase_db, 'Courses'), courseId);
-      
-      // Set the document data
+
       await setDoc(courseRef, courseData);
 
       console.log(`${courseId} successfully written!`);
@@ -169,5 +162,4 @@ const addCoursesToFirestore = async () => {
   }
 };
 
-// Call the function to add data
 addCoursesToFirestore();
