@@ -18,10 +18,9 @@ const Main = () => {
   const onRefresh = () => {
     setRefreshing(true);
     setRefreshKey(refreshKey + 1);
-    // Perform your data fetching or other refreshing tasks here
     setTimeout(() => {
       setRefreshing(false);
-    }, 3000); // Simulate a network request
+    }, 3000);
   };
 
   useFocusEffect(
@@ -31,17 +30,14 @@ const Main = () => {
         const storedStart = await AsyncStorage.getItem('LGstart');
         const storedEnd = await AsyncStorage.getItem('LGend');
   
-        // Parse data if needed
         setLGcolor(storedColor ? JSON.parse(storedColor) : ['#ffd9b3', '#ACE0F9']);
         setLGstart(storedStart ? JSON.parse(storedStart) : { x: 0.3, y: 0.3 });
         setLGend(storedEnd ? JSON.parse(storedEnd) : { x: 0.7, y: 0.7 });
       };
       
       display();
-  
-      // Optionally, return a cleanup function if needed
+
       return () => {
-        // Clean up here if necessary
       };
     }, [])
   );

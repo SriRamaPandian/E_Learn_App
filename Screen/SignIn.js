@@ -3,8 +3,8 @@ import { View, TextInput, Button, Text, Alert, TouchableOpacity, ScrollView } fr
 import { firebase_auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CryptoJS from 'crypto-js'; // Import crypto-js
-
+import logDeviceInfo from './logDeviceInfo';
+import CryptoJS from 'crypto-js';
 
 const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,22 +13,35 @@ const SignIn = ({ navigation }) => {
 
   const handleSignIn = async () => {
     try {
-      // Sign in using Firebase Auth
       const hashedPassword = CryptoJS.SHA256(password).toString();
       const userCredential = await signInWithEmailAndPassword(auth, email, hashedPassword);
       await AsyncStorage.setItem('userId', userCredential.user.uid);
-      // If successful, navigate to the main app screen
+
+      await logDeviceInfo(userCredential.user.uid);
+
       Alert.alert('Sign in successful!');
-      navigation.navigate("Drawer"); // Replace with your main screen
+      navigation.navigate("Drawer");
     } catch (error) {
-      // Handle different authentication errors
-      if (error.code === 'auth/wrong-password') {
-        Alert.alert('Invalid password');
-      } else if (error.code === 'auth/user-not-found') {
-        Alert.alert('No user found with this email');
-      } else {
-        Alert.alert(error.message);
+      
+      let errorMessage = '';
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address format.';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'Your account has been disabled.';
+          break;
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password.';
+          break;
+        default:
+          errorMessage = 'An unexpected error occurred. Please try again.';
       }
+      Alert.alert('Sign In Error', errorMessage);
+      console.error('SignIn Error:', error);
     }
   };
 
