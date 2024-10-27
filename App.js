@@ -17,6 +17,7 @@ const StyledSafeAreaView = styled(SafeAreaView);
 
 export default function App() {
   const [user, setUser] = useState(User);
+  const [isloading, setisloading] = useState(true);
 
   const setId = async (id) => {
     try {
@@ -31,6 +32,7 @@ export default function App() {
       if (currentUser) {
         setUser(currentUser);
         setId(currentUser.uid);
+        setisloading(false);
       } else {
         setUser(null);
       }
@@ -39,14 +41,14 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  if(user == undefined){
-    return(null)
+  if(isloading){
+    return(null);
   }
 
   return (
     <StyledSafeAreaView className="flex-1">
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={ user ? "Drawer" : "SignIn" }>
+        <Stack.Navigator initialRouteName={ user == undefined ? "SignIn" : "Drawer" }>
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Drawer" component={Drawer} options={{ headerShown: false }} />
