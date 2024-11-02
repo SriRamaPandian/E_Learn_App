@@ -6,6 +6,7 @@ import Profile from './Profile';
 import Watchlater from './Watchlater';
 import Youractivity from './Youractivity';
 import Theme from './Theme';
+import Courses from './Courses';
 
 const Draw = createDrawerNavigator();
 
@@ -40,6 +41,11 @@ const Drawer = () => {
       name="Theme"
       component={Theme}
       options={{ drawerLabel: 'Theme' }}
+      />
+      <Draw.Screen
+      name="Courses"
+      component={Courses}
+      options={{ drawerLabel: 'Courses' }}
       />
       </Draw.Navigator>
     </SafeAreaView>
