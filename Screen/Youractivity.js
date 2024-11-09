@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, RefreshControl, Image, TextInput, TouchableOpacity, Alert} from 'react-native';
+import { View, Text, ScrollView, RefreshControl, Image, TextInput, TouchableOpacity, Alert, Platform} from 'react-native';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -9,7 +10,11 @@ import { useCallback } from 'react';
 import { Video } from 'expo-av';
 import * as DocumentPicker from 'expo-document-picker';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import { firebase_db } from '../firebaseConfig';
+import { firebase_db, firebase_storage } from '../firebaseConfig';
+import * as FileSystem from 'expo-file-system';
+import * as IntentLauncher from 'expo-intent-launcher';
+import * as Linking from 'expo-linking';
+
 
 const Youractivity = () => {
 
@@ -20,11 +25,11 @@ const Youractivity = () => {
   const [vname, setvname] = useState('');
   const [description, setdescription] = useState('');
   const [image, setimage] = useState('');
-  const [video, setvideo] = useState('');
   const [cname, setcname] = useState('');
   const [vresult, setvresult] = useState();
   const [dresult, setdresult] = useState();
   const [uploaded, setuploaded] = useState([]);
+  const [type, settype] = useState('');
 
   const [toggle, settoggle] = useState(true);
 
@@ -60,8 +65,12 @@ const Youractivity = () => {
         setLGend(storedEnd ? JSON.parse(storedEnd) : { x: 0.7, y: 0.7 });
         setispressed(false);
       };
-      
+
       display();
+      setimage('');
+      setcname('');
+      setvname('');
+      setdescription('');
 
       const uploaded_data = async () =>{
         const id = await AsyncStorage.getItem('userId');
@@ -70,8 +79,9 @@ const Youractivity = () => {
         const datas = userDocs.docs.map(doc => doc.data());
         const temp = [];
         for (const data of datas){
+          console.log(data.vresult.uri);
           temp.push(
-            <View key={data.docid} className='flex-row items-center justify-center'>
+            <View key={data.key} className='flex-row items-center justify-center'>
               <Video source={{uri: data.vresult.uri}} className=' w-72 h-40 mx-4 my-2 border-4 rounded-md border-slate-700' useNativeControls={true} isLooping={false} shouldPlay={false}/>
               <View className = 'flex-col'>
                 <Text className='text-lg py-3'>Likes: {data.likes}</Text>
@@ -91,13 +101,51 @@ const Youractivity = () => {
     }, [toggle])
   );
 
+
+  const uploadvideo = async (fileUri, fileName) => {
+    try {
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+  
+      const storageRef = ref(firebase_storage, `video/${fileName}`);
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (error) {
+      console.error("File upload error:", error);
+      Alert.alert("Error", "Could not upload file");
+      return null;
+    }
+  };
+
+  const uploadDoc = async (fileUri, fileName) => {
+    try {
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+  
+      const storageRef = ref(firebase_storage, `Document/${fileName}`);
+  
+      await uploadBytes(storageRef, blob);
+  
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (error) {
+      console.error("File upload error:", error);
+      Alert.alert("Error", "Could not upload file");
+      return null;
+    }
+  };
+  
+
   const pickVideo = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'video/*', 
       });
-      setvideo(result.assets[0].uri);
-      console.log(result.assets[0].uri);
+      const videoURL = await uploadvideo(result.assets[0].uri, vname);
+      result.assets[0].uri = videoURL;
       setvresult(result.assets[0]);
     } catch (err) {
       console.warn(err);
@@ -109,9 +157,12 @@ const Youractivity = () => {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/*',
       });
+      const docURL = await uploadDoc(result.assets[0].uri, vname);
+      result.assets[0].uri = docURL;
       setdresult(result.assets[0]);
       
       let fileType = result.assets[0].mimeType || result.assets[0].name.split('.').pop();
+      settype(fileType);
   
       switch(fileType){
         case 'application/pdf':
@@ -151,11 +202,13 @@ const Youractivity = () => {
       const docSnap = await getDoc(docRef);
       if(docSnap.exists()){
         const data = docSnap.data();
-        const key = vname + data.course_name;
+        const cous = data.course_name;
+        const key = [...vname.toLowerCase().split(" ") , ...cous.toLowerCase().split(" ")];
         const docid = id + key;
         await setDoc(doc(firebase_db, 'Videos', docid),{
-          docid,
-          key: key.toLowerCase(),
+          subject: cous,
+          vname,
+          key: key,
           userid: id,
           description,
           vresult,
@@ -176,6 +229,31 @@ const Youractivity = () => {
       console.error(error.message);
     }
   }
+
+  const openDocument = async (uri) => {
+    console.log(uri);
+    if (!uri) {
+      console.error("Document URI is undefined.");
+      return;
+    }
+  
+    try {
+      const mimeType = type;
+  
+      if (Platform.OS === 'android') {
+        const contentUri = await FileSystem.getContentUriAsync(uri);
+        await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+          data: contentUri,
+          flags: 1,
+          type: mimeType,
+        });
+      } else if (Platform.OS === 'ios') {
+        await Linking.openURL(uri);
+      }
+    } catch (error) {
+      console.error("Error opening document:", error);
+    }
+  };
   
 
   return (
@@ -197,7 +275,7 @@ const Youractivity = () => {
           {uploaded}
         </View>
         {ispressed?
-        <View className='items-start mt-[60] p-[10]'>
+        <View className='items-start p-[10]'>
           <Text className='text-2xl font-bold'>Upload New Videos:</Text>
           <View>
             <Text className='text-xl font-bold pt-[30]'>Enter video name:</Text>
@@ -237,7 +315,7 @@ const Youractivity = () => {
               onPress={() => pickDocument()}>
             <Text>Insert</Text>
             </TouchableOpacity>
-            {image?<FontAwesome.Button name={image} size={40} color="#000" onPress={() => console.log(image)} backgroundColor="transparent"/>:''}
+            {image?<FontAwesome.Button name={image} size={40} color="#000" onPress={() => openDocument(dresult.uri)} backgroundColor="transparent"/>:''}
           </View>
           <View>
             <Text className='text-xl font-bold pt-[30]'>Insert Video:</Text>
@@ -246,7 +324,7 @@ const Youractivity = () => {
               onPress={() => pickVideo()}>
             <Text>Insert</Text>
             </TouchableOpacity>
-            {video?<Video source={{uri: video}} className='w-[270] h-[150] border-4 rounded-md border-slate-700' useNativeControls={true} isLooping={false} shouldPlay={false}/>:''}
+            {vresult?<Video source={{uri: vresult.uri}} className='w-[270] h-[150] border-4 rounded-md border-slate-700' useNativeControls={true} isLooping={false} shouldPlay={false}/>:''}
           </View>
           <View className='justify-center items-center ml-[150] h-[200]'>
             <TouchableOpacity
