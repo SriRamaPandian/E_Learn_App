@@ -11,10 +11,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from "react-native-gesture-handler";
-<<<<<<< HEAD
-import CSE from "./CSE";
-=======
->>>>>>> 86b0fd8 (going_to_finish)
 const Courses = () => {
   const navigation = useNavigation();
 
@@ -67,40 +63,24 @@ const Courses = () => {
         }
       >
         <View className="p-4">
-<<<<<<< HEAD
-          <Text className="text-lg font-bold">Select Department</Text>
-=======
           <Text className="text-2xl font-semibold">Select Department</Text>
->>>>>>> 86b0fd8 (going_to_finish)
           <TouchableOpacity
             onPress={() => navigation.navigate("CSE")}
             className="mt-4 p-4 bg-blue-200 rounded"
           >
-<<<<<<< HEAD
-            <Text className="text-center">CSE</Text>
-=======
             <Text className="text-center text-xl font-medium">CSE</Text>
->>>>>>> 86b0fd8 (going_to_finish)
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("ECE")}
             className="mt-4 p-4 bg-blue-200 rounded"
           >
-<<<<<<< HEAD
-            <Text className="text-center">ECE</Text>
-=======
             <Text className="text-center text-xl font-medium">ECE</Text>
->>>>>>> 86b0fd8 (going_to_finish)
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("MECH")}
             className="mt-4 p-4 bg-blue-200 rounded"
           >
-<<<<<<< HEAD
-            <Text className="text-center">MECH</Text>
-=======
             <Text className="text-center text-xl font-medium">MECH</Text>
->>>>>>> 86b0fd8 (going_to_finish)
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -108,8 +88,4 @@ const Courses = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Courses;
-=======
-export default Courses;
->>>>>>> 86b0fd8 (going_to_finish)

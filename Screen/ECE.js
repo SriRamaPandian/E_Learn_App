@@ -145,20 +145,6 @@ const ECE = () => {
   const [LGstart, setLGstart] = useState({ x: 0.3, y: 0.3 });
   const [LGend, setLGend] = useState({ x: 0.7, y: 0.7 });
   
-<<<<<<< HEAD
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    setRefreshKey(refreshKey + 1);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 3000);
-  };
-=======
->>>>>>> 86b0fd8 (going_to_finish)
 
   useFocusEffect(
     useCallback(() => {
@@ -188,34 +174,19 @@ const ECE = () => {
         <StyledContainer className='flex-1 p-4'>
             <StyledText className='text-2xl font-bold text-gray-800 mb-4 text-center'>ECE Courses</StyledText>
             <StyledRow className="flex-row border-b border-black-300 pb-2 mb-2">
-<<<<<<< HEAD
-                <StyledText className="w-2/3 text-gray-600 font-semibold pl-2">Course Name</StyledText>
-                <StyledText className="w-1/3 text-gray-600 font-semibold pl-2 text-right">Course Code</StyledText>
-=======
                 <StyledText className="w-2/3 text-gray-600 font-semibold pl-2 text-lg">Course Name</StyledText>
                 <StyledText className="w-1/3 text-gray-600 font-semibold pl-2 text-right text-lg">Course Code</StyledText>
->>>>>>> 86b0fd8 (going_to_finish)
             </StyledRow>
             <FlatList
                 data={coursesArray}
                 keyExtractor={(item) => item.code}
                 renderItem={({ item }) => (
                     <StyledRow className="flex-row py-3 border-b border-gray-400">
-<<<<<<< HEAD
-                        <StyledText className="w-2/3 text-gray-700 pl-4">{item.course_name}</StyledText>
-                        <StyledText className="w-1/3 text-gray-700 pr-4 text-right">{item.code}</StyledText>
-                    </StyledRow>
-                )}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-=======
                         <StyledText className="w-2/3 text-gray-700 pl-4 text-base">{item.course_name}</StyledText>
                         <StyledText className="w-1/3 text-gray-700 pr-4 text-right text-base">{item.code}</StyledText>
                     </StyledRow>
                 )}
                 showsVerticalScrollIndicator={false}
->>>>>>> 86b0fd8 (going_to_finish)
             />
         </StyledContainer>
     </LinearGradient>
