@@ -9,6 +9,7 @@ import Drawer from './Screen/Drawer.js';
 import SelectFav from './Screen/SelectFav.js';
 import Search from './Screen/Search.js';
 import Result from './Screen/Result.js';
+import LoadingScreen from './Screen/LoadingScreen.js';
 import CSE from "./Screen/CSE.js";
 import ECE from "./Screen/ECE.js";
 import MECH from "./Screen/MECH.js";
@@ -50,7 +51,7 @@ export default function App() {
   }, []);
 
   if (isloading) {
-    return null;
+    return <LoadingScreen />;
   }
 
   return (
