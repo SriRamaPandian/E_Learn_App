@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import LoadingScreen from './LoadingScreen';
 import { useCallback } from 'react';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { firebase_auth, firebase_db } from '../firebaseConfig';
@@ -154,11 +155,7 @@ const Result = () => {
 
   if (isloading) {
     return (
-      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
-        <View className='p-20 justify-center items-center'>
-          <Text className='font-semibold text-2xl'>loading...</Text>
-        </View>
-      </LinearGradient>
+      <LoadingScreen />
     );
   }
 
