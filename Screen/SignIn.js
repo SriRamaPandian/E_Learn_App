@@ -70,7 +70,7 @@ const SignIn = ({ navigation }) => {
           <View className='flex-row mt-3 bg-slate-200'>
             <Text className='p-3 mr-3'>Don't have an account?</Text>
             <TouchableOpacity className='justify-center items-center'>
-              <Text className='p-2 rounded-lg text-sky-500 text-base' onPress={() => navigation.navigate("SignUp")}>
+              <Text className='p-2 rounded-lg text-sky-500 text-base' onPress={() => navigation.navigate("RoleSelection")}>
                 Sign up
               </Text>
             </TouchableOpacity>

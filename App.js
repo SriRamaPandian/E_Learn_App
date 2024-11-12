@@ -5,11 +5,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './Screen/SignIn.js';
 import SignUp from './Screen/SignUp.js';
+import StaffSignUp from './Screen/StaffSignUp.js'
 import Drawer from './Screen/Drawer.js';
 import SelectFav from './Screen/SelectFav.js';
 import Search from './Screen/Search.js';
 import Result from './Screen/Result.js';
 import LoadingScreen from './Screen/LoadingScreen.js';
+import RoleSelection from './Screen/RoleSelection.js';
 import CSE from "./Screen/CSE.js";
 import ECE from "./Screen/ECE.js";
 import MECH from "./Screen/MECH.js";
@@ -60,6 +62,8 @@ export default function App() {
         <Stack.Navigator initialRouteName={ user == null ? "SignIn" : "Drawer" }>
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="RoleSelection" component={RoleSelection} />
+          <Stack.Screen name="StaffSignUp" component={StaffSignUp} />
           <Stack.Screen
             name="Drawer"
             component={Drawer}

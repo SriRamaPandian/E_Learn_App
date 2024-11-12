@@ -4,6 +4,7 @@ import { firebase_auth, firebase_db } from '../firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback } from 'react';
+import LoadingScreen from './LoadingScreen';
 import { collection, query, where, getDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 
 const SelectCourse = ({ navigation }) => {
@@ -105,11 +106,7 @@ const SelectCourse = ({ navigation }) => {
 
   if (isLoading) {
     return (
-        <View className='p-20 justify-center items-center'>
-          <Text className='font-semibold text-2xl'>
-          loading...
-          </Text>
-        </View>
+       <LoadingScreen />
     );
   }
 

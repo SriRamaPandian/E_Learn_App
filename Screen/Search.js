@@ -8,6 +8,7 @@ import { useRoute } from '@react-navigation/native';
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { firebase_db } from '../firebaseConfig';
 import { Video } from 'expo-av';
+import LoadingScreen from './LoadingScreen';
 
 const Search = ({navigation}) => {
 
@@ -87,11 +88,7 @@ const Search = ({navigation}) => {
 
   if (isloading) {
     return (
-      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
-        <View className='p-20 justify-center items-center'>
-          <Text className='font-semibold text-2xl'>loading...</Text>
-        </View>
-      </LinearGradient>
+      <LoadingScreen />
     );
   }
 
