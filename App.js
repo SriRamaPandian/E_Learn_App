@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './Screen/SignIn.js';
@@ -53,7 +53,7 @@ export default function App() {
   }, []);
 
   if (isloading) {
-    return <LoadingScreen />;
+    return (<View className=' bg-sky-100 justify-center items-center flex-1'><LoadingScreen /></View>);
   }
 
   return (

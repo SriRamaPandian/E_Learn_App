@@ -10,6 +10,7 @@ import { firebase_db } from '../firebaseConfig';
 import { Video } from 'expo-av';
 import LoadingScreen from './LoadingScreen';
 
+
 const Search = ({navigation}) => {
 
   const route = useRoute();
@@ -51,13 +52,13 @@ const Search = ({navigation}) => {
       const getdata = async () =>{
         const usersQuery = query(collection(firebase_db, 'Videos'), where('key', 'array-contains', text));
         const userDocs = await getDocs(usersQuery);
-        const datas = userDocs.docs.map(doc => doc.data());
+        const datas = userDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const temp = [];
         if (datas.length > 0) {
           datas.forEach((data, index) => {
             temp.push(
               <View key={`${data.vname}-${index}`}>
-                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate("Result")}>
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate("Result",{DocId: data.id})}>
                   <Video 
                     source={{ uri: data.vresult.uri }} 
                     className='w-72 h-40 mx-4 my-2 border-4 rounded-md border-slate-700' 
@@ -88,7 +89,9 @@ const Search = ({navigation}) => {
 
   if (isloading) {
     return (
-      <LoadingScreen />
+      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
+        <LoadingScreen />
+      </LinearGradient>
     );
   }
 

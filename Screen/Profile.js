@@ -11,6 +11,7 @@ import { useCallback } from 'react';
 import LoadingScreen from './LoadingScreen';
 import * as Device from 'expo-device';
 
+
 const Profile = ({ navigation }) => {
   const [first, setfirst] = useState('');
   const [name, setname] = useState('');
@@ -130,7 +131,9 @@ const Profile = ({ navigation }) => {
 
   if (isLoading) {
     return (
-      <LoadingScreen />
+      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
+        <LoadingScreen />
+      </LinearGradient>
     );
   }
 
@@ -173,7 +176,7 @@ const Profile = ({ navigation }) => {
               <View>{prof}</View>
               <View className='my-7'>
                 <View className='flex-row justify-start items-center p-3 ml-7'>
-                <AntDesign.Button name="pluscircleo" size={40} color="#000" onPress={() => {setmodel(false);navigation.replace("SignUp");}} backgroundColor="transparent"/>
+                <AntDesign.Button name="pluscircleo" size={40} color="#000" onPress={() => {setmodel(false);navigation.replace("RoleSelection");}} backgroundColor="transparent"/>
                 <Text className='text-lg'>add account</Text>
                 </View>
                 <View className='items-end mr-12'>

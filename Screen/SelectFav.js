@@ -105,9 +105,7 @@ const SelectCourse = ({ navigation }) => {
  
 
   if (isLoading) {
-    return (
-       <LoadingScreen />
-    );
+    return (<View className=' bg-sky-100 justify-center items-center flex-1'><LoadingScreen /></View>);
   }
 
   return (
