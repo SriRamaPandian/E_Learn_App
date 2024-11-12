@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { View, Text, ScrollView, RefreshControl, Alert, TextInput, TouchableOpacity, Platform} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,21 +9,24 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import LoadingScreen from './LoadingScreen';
 import { useCallback } from 'react';
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, query, where, getDocs, setDoc , arrayUnion} from 'firebase/firestore';
 import { firebase_auth, firebase_db } from '../firebaseConfig';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Linking from 'expo-linking';
 
-const Result = () => {
+
+const Result = ({navigation}) => {
 
   const route = useRoute();
   const { DocId } = route.params || {};
 
-  const [isloading, setisloading] = useState(true);
   const [isliked, setisliked] = useState(false);
+  const [isviewed, setisviewd] = useState(true);
+  const [isloading, setisloading] = useState(true);
 
+  const [related, setrelated] = useState('');
   const [vname, setvname] = useState('');
   const [description,  setdescription] = useState('');
   const [vresult, setvresult] = useState('');
@@ -32,6 +35,7 @@ const Result = () => {
   const [views, setviews] = useState(0);
   const [likes, setlikes] = useState(0);
   const [feedback, setfeedback] = useState('');
+  const [VideoUri, setVideoUri] = useState('');
 
   const [LGcolor, setLGcolor] = useState(['#ffd9b3', '#ACE0F9']);
   const [LGstart, setLGstart] = useState({ x: 0.3, y: 0.3 });
@@ -63,61 +67,140 @@ const Result = () => {
       };
       
       display();
-
-      const getdata = async () => {
-        try{
-          const docRef = doc(firebase_db, 'Videos', DocId );
-          const DocSnap = await getDoc(docRef);
-
-          if (DocSnap.exists()) {
-            const datas = DocSnap.data();
-            setvname(datas.vname);
-            setdescription(datas.description);
-            setvresult(datas.vresult);
-            setdresult(datas.dresult);
-            setviews(datas.views);
-            setlikes(datas.likes);
-            switch(datas.dresult.mimeType){
-              case 'application/pdf':
-                setimage('file-pdf-o');
-                break;
-              case 'application/vnd.ms-powerpoint':
-                setimage('file-powerpoint-o');
-                break;
-              case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-                setimage('file-powerpoint-o');
-                break;
-              case 'application/msword':
-                setimage('file-word-o');
-                break;
-              case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                setimage('file-word-o');
-                break;
-              case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                setimage('file-excel-o');
-                break;
-              default:
-                setimage('file-o');
-            }
-            }
-      setisloading(false);
-
-          }
-          catch(e){
-            Alert.alert("Error",e.message);
-            console.log(e.message);
-          }
-      }
-
-      getdata();
   
       return () => {
       };
     }, [])
   );
 
+
+  useEffect(() => {
+    const getdata = async () => {
+      try{
+      const docRef = doc(firebase_db, 'Videos', DocId );
+      const DocSnap = await getDoc(docRef);
+
+      if (DocSnap.exists()) {
+        const datas = DocSnap.data();
+        setvname(datas.vname);
+        setdescription(datas.description);
+        setvresult(datas.vresult);
+        setdresult(datas.dresult);
+        setviews(datas.views);
+        setlikes(datas.likes);
+        switch(datas.dresult.mimeType){
+          case 'application/pdf':
+            setimage('file-pdf-o');
+            break;
+          case 'application/vnd.ms-powerpoint':
+            setimage('file-powerpoint-o');
+            break;
+          case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+            setimage('file-powerpoint-o');
+            break;
+          case 'application/msword':
+            setimage('file-word-o');
+            break;
+          case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            setimage('file-word-o');
+            break;
+          case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            setimage('file-excel-o');
+            break;
+          default:
+            setimage('file-o');
+        }
+
+        const localUri = FileSystem.documentDirectory + 'sample_video.mp4';
+        await FileSystem.downloadAsync(datas.vresult.uri, localUri);
+        setVideoUri(localUri);
+
+        const usersQuery = query(collection(firebase_db, 'Videos'), where('subject', '==', datas.subject));
+        const userDocs = await getDocs(usersQuery);
+        const info = userDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        const temp = [];
+          if (info.length > 1) {
+            info.forEach((data, index) => {
+              if(data.id != DocId){
+                temp.push(
+                <View key={`${data.vname}-${index}`}>
+                  <TouchableOpacity activeOpacity={1} onPress={() => navigation.replace("Result",{DocId: data.id})}>
+                    <Video 
+                      source={{ uri: data.vresult.uri }} 
+                      className=' w-52 h-28 mx-4 my-2 border-4 rounded-md border-slate-700' 
+                      useNativeControls={false} 
+                      isLooping={false} 
+                      shouldPlay={false} 
+                    />
+                  </TouchableOpacity>
+                  <Text className='text-xl px-7 mb-3'>{data.vname}</Text>
+                </View>
+                );
+              }
+            });
+            setrelated(temp);
+          }
+          else{
+            setrelated(<Text className='text-2xl p-10'>!!!No Related videos Found!!!</Text>);
+          }
+        }
+
+      setisloading(false);
+
+      }
+      catch(e){
+        Alert.alert("Error",e.message);
+        console.log(e.message);
+      }
+  }
+
+  getdata();
+
+  },[isliked || isviewed ])
+
+  const liked = async () => {
+    await updateDoc(doc(firebase_db, 'Videos', DocId), {
+      likes: likes + 1,
+    });
+    setisliked(!isliked);
+  }
+  const notliked = async () => {
+    await updateDoc(doc(firebase_db, 'Videos', DocId), {
+      likes: likes - 1,
+    });
+    setisliked(!isliked);
+  }
+
+  const viewed = async () => {
+    if(isviewed){
+      await updateDoc(doc(firebase_db, 'Videos', DocId), {
+      views: views + 1,
+    });
+    }
+    setisviewd(false);
+  }
+
+  const watched = async () => {
+    const id = await AsyncStorage.getItem('userId');
+    await setDoc(doc(firebase_db, 'WatchLater', id), {
+      DocIds: arrayUnion(DocId),
+    }, { merge: true });
+    Alert.alert("Successfully added")
+  }
+
+  const setfeed = async () => {
+    const id = await AsyncStorage.getItem('userId');
+    const docRef = doc(firebase_db, 'Profile', id);
+    const ProSnap = await getDoc(docRef);
+    const userProfile = ProSnap.data();
+    await setDoc(doc(firebase_db, 'Feedback', DocId), {
+      feeds: arrayUnion({ email: userProfile.email, feedback: feedback }),
+    }, { merge: true });
+    Alert.alert("feed Done")
+  }
+
   const openDocument = async (data) => {
-    console.log("Firebase Storage URI:", data.uri);
   
     if (!data.uri || !data.mimeType) {
       console.error("Document URI or MIME type is undefined.");
@@ -136,7 +219,6 @@ const Result = () => {
       const localUri = `${FileSystem.documentDirectory}downloadedDocument.${extension}`;
     
       const { uri: downloadedUri } = await FileSystem.downloadAsync(data.uri, localUri);
-      console.log("File downloaded to local path:", downloadedUri);
     
       if (Platform.OS === 'android') {
         const contentUri = await FileSystem.getContentUriAsync(downloadedUri);
@@ -155,11 +237,13 @@ const Result = () => {
 
   if (isloading) {
     return (
-      <LoadingScreen />
+      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
+        <LoadingScreen />
+      </LinearGradient>
     );
   }
 
-  return (
+    return (
     <LinearGradient 
       colors={LGcolor} 
       start={LGstart} 
@@ -170,20 +254,20 @@ const Result = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View className='flex-1 p-3'>
           <View><Text className='font-extrabold text-2xl'>{vname + ':'}</Text></View>
-          <View className='justify-center items-center my-3'>
+          <TouchableOpacity className='justify-center items-center my-3' onPress={viewed} activeOpacity={0.9}>
             <Video 
-            source={{ uri: vresult.uri }} 
+            source={{ uri: VideoUri }} 
             className=' w-11/12 h-48 border-4 rounded-md border-slate-700' 
             useNativeControls={true} 
             isLooping={false} 
             shouldPlay={true} />
-          </View>
+          </TouchableOpacity>
           <View className='flex-row justify-evenly'>
-            {isliked ? <TouchableOpacity onPress={() => setisliked(!isliked)} className=' px-3 bg-slate-500/30 rounded-lg justify-center items-center flex-row' activeOpacity={0.3}><Text>{likes} likes </Text><AntDesign name='like1' size={30}/></TouchableOpacity> : <TouchableOpacity onPress={() => setisliked(!isliked)} className=' px-3 bg-slate-500/30 rounded-lg justify-center items-center flex-row' activeOpacity={0.3}><Text>{likes} likes </Text><AntDesign name='like2' size={30}/></TouchableOpacity>}
+            {isliked ? <TouchableOpacity onPress={notliked} className=' px-3 bg-slate-500/30 rounded-lg justify-center items-center flex-row' activeOpacity={0.3}><Text>{likes} likes </Text><AntDesign name='like1' size={30}/></TouchableOpacity> : <TouchableOpacity onPress={liked} className=' px-3 bg-slate-500/30 rounded-lg justify-center items-center flex-row' activeOpacity={0.3}><Text>{likes} likes </Text><AntDesign name='like2' size={30}/></TouchableOpacity>}
 
             <View className=' px-3 bg-slate-500/30 rounded-lg justify-center items-center '><Text>{views} views</Text></View>
             
-            <TouchableOpacity className=' px-3 bg-slate-500/30 rounded-lg justify-center flex-row items-center ' activeOpacity={0.3}><Text>Watchlater</Text><MaterialIcons name="watch-later" size={40}  /></TouchableOpacity>
+            <TouchableOpacity className=' px-3 bg-slate-500/30 rounded-lg justify-center flex-row items-center ' activeOpacity={0.3} onPress={watched}><Text>Watchlater</Text><MaterialIcons name="watch-later" size={40}  /></TouchableOpacity>
           </View>
           <View className=' bg-slate-400/30 rounded-xl p-3 m-2'><Text className='font-semibold text-xl'>Description:</Text><Text className=' text-base'>{description}</Text></View>
           <View className=' bg-slate-400/30 rounded-xl p-3 m-2'><Text className='font-semibold text-xl'>Attachment:</Text><FontAwesome.Button name={image} size={40} color="#000" onPress={() => openDocument(dresult)} backgroundColor="transparent"/></View>
@@ -197,9 +281,9 @@ const Result = () => {
               numberOfLines={3}
               scrollEnabled={true}
             />
-            <TouchableOpacity className='rounded-md bg-slate-400/75 ml-72 p-1'><Text className=' font-medium text-base'>submit</Text></TouchableOpacity>
+            <TouchableOpacity onPress={setfeed} className='rounded-md bg-slate-400/75 ml-72 p-1'><Text className=' font-medium text-base'>submit</Text></TouchableOpacity>
           </View>
-          <View><Text className='font-bold text-xl'>Related videos:</Text><View></View></View>
+          <View><Text className='font-bold text-xl'>Related videos:</Text><View className='flex-col'>{related}</View></View>
         </View>
       </ScrollView>
     </LinearGradient>

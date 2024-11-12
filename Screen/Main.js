@@ -161,7 +161,9 @@ const Main = ({navigation}) => {
 
   if (isloading1 || isloading2) {
     return (
-      <LoadingScreen />
+      <LinearGradient colors={LGcolor} start={LGstart} end={LGend} className='flex-1'>
+        <LoadingScreen />
+      </LinearGradient>
     );
   }
 

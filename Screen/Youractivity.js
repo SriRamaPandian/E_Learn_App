@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, RefreshControl, Image, TextInput, TouchableOpacity, Alert, Platform} from 'react-native';
+import { View, Text, ScrollView, RefreshControl, Modal, TextInput, TouchableOpacity, Alert, Platform} from 'react-native';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
@@ -30,7 +30,9 @@ const Youractivity = () => {
   const [dresult, setdresult] = useState();
   const [uploaded, setuploaded] = useState([]);
   const [type, settype] = useState('');
+  const [feed, setfeed] = useState('');
 
+  const [model, setmodel] = useState(false);
   const [toggle, settoggle] = useState(true);
 
   const [ispressed, setispressed] = useState(false);
@@ -42,7 +44,6 @@ const Youractivity = () => {
     setRefreshing(true);
     setRefreshKey(refreshKey + 1);
     setimage('');
-    setvideo('');
     setcname('');
     setvname('');
     setdescription('');
@@ -76,16 +77,16 @@ const Youractivity = () => {
         const id = await AsyncStorage.getItem('userId');
         const usersQuery = query(collection(firebase_db, 'Videos'), where('userid', '==', id));
         const userDocs = await getDocs(usersQuery);
-        const datas = userDocs.docs.map(doc => doc.data());
+        const datas = userDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const temp = [];
         for (const data of datas){
-          console.log(data.vresult.uri);
           temp.push(
             <View key={data.key} className='flex-row items-center justify-center'>
-              <Video source={{uri: data.vresult.uri}} className=' w-72 h-40 mx-4 my-2 border-4 rounded-md border-slate-700' useNativeControls={true} isLooping={false} shouldPlay={false}/>
+              <Video source={{uri: data.vresult.uri}} className=' w-64 h-36 mx-4 my-2 border-4 rounded-md border-slate-700' useNativeControls={true} isLooping={false} shouldPlay={false}/>
               <View className = 'flex-col'>
                 <Text className='text-lg py-3'>Likes: {data.likes}</Text>
                 <Text className='text-lg py-3'>Views: {data.views}</Text>
+                <TouchableOpacity onPress={() => getfeed(data.id)} className='py-3'><Text className='text-lg'>Feedback</Text></TouchableOpacity>
               </View>
             </View>
           )
@@ -101,6 +102,26 @@ const Youractivity = () => {
     }, [toggle])
   );
 
+  const getfeed = async (id) => {
+    try{
+      const docRef = doc(firebase_db, 'Feedback', id);
+      const DocSnap = await getDoc(docRef);
+
+      if (DocSnap.exists()) {
+        const datas = DocSnap.data();
+        setfeed(datas.feeds);
+      }
+      else{
+        setfeed('');
+      }
+      setmodel(true);
+
+    }
+    catch(e){
+      Alert.alert("Error",e.message);
+      console.log(e.message);
+    }
+  }
 
   const uploadvideo = async (fileUri, fileName) => {
     try {
@@ -198,7 +219,7 @@ const Youractivity = () => {
         throw new Error('All fields required');
       }
       const id = await AsyncStorage.getItem('userId');
-      const docRef = doc(firebase_db,'Courses',cname);
+      const docRef = doc(firebase_db,'feed',cname);
       const docSnap = await getDoc(docRef);
       if(docSnap.exists()){
         const data = docSnap.data();
@@ -328,13 +349,38 @@ const Youractivity = () => {
           </View>
           <View className='justify-center items-center ml-[150] h-[200]'>
             <TouchableOpacity
-                className='w-1/2 mb-[80] p-[20] border rounded-full text-black justify-center items-center bg-cyan-400'
+                className='w-1/2 mb-10 p-3 border rounded-xl text-black justify-center items-center bg-slate-400/60'
                 onPress={submit}>
               <Text>Submit</Text>
             </TouchableOpacity>
           </View>
         </View>
         :''}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={model}
+          onRequestClose={() => setmodel(false)}>
+          <View className='justify-center items-center w-full h-1/3 bg-slate-600/70 absolute bottom-0 rounded-lg'> 
+            <View className='w-11/12 m-7 bg-white/80 rounded-xl'>
+            <Text className='px-3 text-xl'>Feedbacks:</Text>
+              <ScrollView>
+              <View className='justify-center pl-7 pt-3 flex-col'>
+                {feed && feed.length > 0 ? (
+                  feed.map((data, index) => (
+                    <View key={index} className='mb-4'>
+                      <Text className='text-sm text-gray-500 py-1'> {index + 1}. {data.email}</Text>
+                      <View className='pl-7'><Text className='text-lg'>{data.feedback}</Text></View>
+                    </View>
+                  ))
+                ) : (
+                  <Text className='text-lg'>No feedback available</Text>
+                )}
+              </View>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </LinearGradient>
   )

@@ -18,13 +18,13 @@ const StaffSignUp = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [affiliation, setAffiliation] = useState('');
   const [institutionName, setInstitutionName] = useState('');
-  const [position, setPosition] = useState('');
   const [dept, setDept] = useState(null);
   const auth = firebase_auth;
 
   const handleSignUp = async () => {
+    console.log(email,password,username,dept);
     try {
-      if (!email || !password || !username || !position || !dept) {
+      if (!email || !password || !username || !dept) {
         throw new Error('All fields are required');
       }
 
@@ -41,7 +41,6 @@ const StaffSignUp = ({ navigation }) => {
         email,
         password: hashedPassword,
         institutionName,
-        position,
         dept,
         createdAt: new Date(),
       });
@@ -51,7 +50,6 @@ const StaffSignUp = ({ navigation }) => {
       await AsyncStorage.setItem('userId', userCredential.user.uid);
 
       Alert.alert('Sign up successful!');
-      navigation.navigate("SelectFav");
 
     } catch (error) {
       Alert.alert('Sign Up Error', error.message);
