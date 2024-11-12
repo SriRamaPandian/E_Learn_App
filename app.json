@@ -4,7 +4,7 @@
     "slug": "E_Learn_App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/display.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,15 +19,24 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/display.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sri_rama_pandian_h_u.E_Learn_App"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "87b633d3-ef1a-431c-9bc5-68ee5529692f"
+      }
+    }
   }
 }
