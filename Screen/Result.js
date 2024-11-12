@@ -35,7 +35,6 @@ const Result = ({navigation}) => {
   const [views, setviews] = useState(0);
   const [likes, setlikes] = useState(0);
   const [feedback, setfeedback] = useState('');
-  const [VideoUri, setVideoUri] = useState('');
 
   const [LGcolor, setLGcolor] = useState(['#ffd9b3', '#ACE0F9']);
   const [LGstart, setLGstart] = useState({ x: 0.3, y: 0.3 });
@@ -110,10 +109,6 @@ const Result = ({navigation}) => {
           default:
             setimage('file-o');
         }
-
-        const localUri = FileSystem.documentDirectory + 'sample_video.mp4';
-        await FileSystem.downloadAsync(datas.vresult.uri, localUri);
-        setVideoUri(localUri);
 
         const usersQuery = query(collection(firebase_db, 'Videos'), where('subject', '==', datas.subject));
         const userDocs = await getDocs(usersQuery);
@@ -256,7 +251,7 @@ const Result = ({navigation}) => {
           <View><Text className='font-extrabold text-2xl'>{vname + ':'}</Text></View>
           <TouchableOpacity className='justify-center items-center my-3' onPress={viewed} activeOpacity={0.9}>
             <Video 
-            source={{ uri: VideoUri }} 
+            source={{ uri: vresult.uri }} 
             className=' w-11/12 h-48 border-4 rounded-md border-slate-700' 
             useNativeControls={true} 
             isLooping={false} 
