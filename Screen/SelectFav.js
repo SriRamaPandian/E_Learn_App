@@ -91,7 +91,7 @@ const SelectCourse = ({ navigation }) => {
           favcourse: val
         });
         console.log('Array field added successfully!');
-        navigation.navigate("Drawer");
+        navigation.replace("Drawer");
       }
       else{
         Alert.alert("Select atleast 3 Courses");

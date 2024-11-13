@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, RefreshControl, Modal, TouchableOpacity, Alert } from 'react-native';
 import { collection, query, where, getDoc, doc, getDocs } from 'firebase/firestore';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { firebase_auth, firebase_db } from '../firebaseConfig';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,6 +21,7 @@ const Profile = ({ navigation }) => {
   const [courses, setcourses] = useState([]);
   const [prof, setProf] = useState([]);
   const [model, setmodel] = useState(false);
+  const [trigger, settrigger] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isLoading, setisLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -107,12 +108,12 @@ const Profile = ({ navigation }) => {
         setProf(temp);
         setisLoading(false);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error  :", error);
       }
     };
 
     getdata();
-  }, [model]); 
+  }, [trigger]); 
 
 
   const changeUser = async (id, mail,pass) => {
@@ -121,12 +122,37 @@ const Profile = ({ navigation }) => {
       await signInWithEmailAndPassword(firebase_auth, mail, pass);
       console.log('Switched user successfully');
       setmodel(false);
+      settrigger(false);
       Alert.alert("User changed");
       navigation.replace("Drawer");
     } catch (e) {
+      Alert.alert("Authentication error:", e.message);
       console.error("Authentication error:", e.message);
     }
   };
+
+  const addaccount = async () =>{
+    try {
+      setmodel(false);
+      await signOut(firebase_auth); 
+      await AsyncStorage.removeItem('userId');
+      navigation.replace("RoleSelection");
+    } catch (e) {
+      Alert.alert("logout error:", e.message);
+      console.error("logout error:", e.message);
+    }
+  }
+  const logout = async () =>{
+    try {
+      setmodel(false);
+      await signOut(firebase_auth); 
+      await AsyncStorage.removeItem('userId');
+      navigation.replace("SignIn");
+    } catch (e) {
+      Alert.alert("logout error:", e.message);
+      console.error("logout error:", e.message);
+    }
+  }
 
 
   if (isLoading) {
@@ -142,7 +168,7 @@ const Profile = ({ navigation }) => {
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View className='flex-row items-center'>
-          <TouchableOpacity className={'w-[65] h-[65] rounded-full justify-center bg-cyan-200 m-[25] mt-[30] ml-6 items-center'} onPress={() => setmodel(true)}>
+          <TouchableOpacity className={'w-[65] h-[65] rounded-full justify-center bg-cyan-200 m-[25] mt-[30] ml-6 items-center'} onPress={() => {setmodel(true);settrigger(true)}}>
             <Text className='text-center text-3xl'>{first}</Text>
           </TouchableOpacity>
           <Text className='text-2xl mt-[10] flex-wrap justify-center items-center'>{name}</Text>
@@ -164,7 +190,7 @@ const Profile = ({ navigation }) => {
           animationType="fade"
           transparent={true}
           visible={model}
-          onRequestClose={() => setmodel(false)}>
+          onRequestClose={() => {setmodel(false);settrigger(false)}}>
           <View className='justify-center items-center w-full h-full bg-slate-600/70'>
             <View className='w-5/6 m-40 bg-white rounded-xl'>
               <View className='justify-center items-center pt-7'>
@@ -176,11 +202,11 @@ const Profile = ({ navigation }) => {
               <View>{prof}</View>
               <View className='my-7'>
                 <View className='flex-row justify-start items-center p-3 ml-7'>
-                <AntDesign.Button name="pluscircleo" size={40} color="#000" onPress={() => {setmodel(false);navigation.replace("RoleSelection");}} backgroundColor="transparent"/>
+                <AntDesign.Button name="pluscircleo" size={40} color="#000" onPress={addaccount} backgroundColor="transparent"/>
                 <Text className='text-lg'>add account</Text>
                 </View>
                 <View className='items-end mr-12'>
-                  <TouchableOpacity className='' onPress={() => {setmodel(false);navigation.replace("SignIn");}}><Text className='text-lg bg-slate-200 p-3'>Logout</Text></TouchableOpacity>   
+                  <TouchableOpacity className='' onPress={logout}><Text className='text-lg bg-slate-200 p-3'>Logout</Text></TouchableOpacity>   
                 </View>
               </View>
             </View>
