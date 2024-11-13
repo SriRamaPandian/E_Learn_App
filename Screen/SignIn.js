@@ -20,7 +20,7 @@ const SignIn = ({ navigation }) => {
       await logDeviceInfo(userCredential.user.uid);
 
       Alert.alert('Sign in successful!');
-      navigation.navigate("Drawer");
+      navigation.replace("Drawer");
     } catch (error) {
       
       let errorMessage = '';

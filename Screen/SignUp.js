@@ -47,7 +47,7 @@ const SignUp = ({ navigation }) => {
       await AsyncStorage.setItem('userId', userCredential.user.uid);
 
       Alert.alert('Sign up successful!');
-      navigation.navigate("SelectFav");
+      navigation.replace("SelectFav");
 
     } catch (error) {
       Alert.alert('Sign Up Error', error.message);
