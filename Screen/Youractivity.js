@@ -219,7 +219,7 @@ const Youractivity = () => {
         throw new Error('All fields required');
       }
       const id = await AsyncStorage.getItem('userId');
-      const docRef = doc(firebase_db,'feed',cname);
+      const docRef = doc(firebase_db,'Courses',cname);
       const docSnap = await getDoc(docRef);
       if(docSnap.exists()){
         const data = docSnap.data();
